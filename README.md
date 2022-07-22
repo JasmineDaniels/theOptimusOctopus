@@ -10,7 +10,7 @@
 
 ## Description?
 
-An awesome application to write Notes and keeping track of your thoughts, perfect for todo lists, memos, and the like! 
+An awesome application to write Notes and keep track of your thoughts, perfect for todo lists, memos, and the like! 
 
 ## What Problem does it Solve?
 
