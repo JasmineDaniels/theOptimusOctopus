@@ -1,63 +1,70 @@
 const express = require('express');
-//const { v4: uuidv4 } = require('uuid');
-//const sortNotes = require('./public/assets/js/index')
 const noteData = require('./db/db.json')
-const PORT = 5001 //process.env.PORT 
+const fs = require('fs')
+const id = require('./helpers/uuid')
+
+const PORT = process.env.PORT || 5001 
 const app = express();
-//let id = uuidv4()
 
 //middlewear
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use(express.static('public')); // index.html
-//public folder = clientside = Chrome
 
-// app.get('/', (req, res) => {
-//     console.log(`Server got your request`)
-//     res.sendFile(path.join(__dirname, '/public/index.html'))
-// })
 
 app.get('/notes', (req, res) => {
     res.sendFile(`${__dirname}/public/notes.html`)
 })
 
-// app.use(express.json())
-// app.use(express.urlencoded({ extended: true })) //may not need
-
-//res is going out req is coming in 
-//.json takes in an obj: arr, obj, function
 //method: 'get' = READ data
 app.get('/api/notes', (req, res) => { // get all notes
     res.json(noteData)
     
 })
 
-app.get('/api/notes/:id', (req, res) => {
-
-    //const requestedNote = noteData.find(x => x.id == req.params.id)
+app.get('/api/notes/:id', (req, res) => { // get a note
+    const requestedNote = noteData.find(x => x.id == req.params.id)
     console.log(req.params)  
-    console.log(req.query) 
-    res.json(noteData)    
+    res.json(requestedNote)   
 })
 
 
-// noteData.push(newNote) 
+//method: 'post' = CREATE data
 app.post('/api/notes', (req, res) => { 
     console.log(req.body)
-    //res.json(noteData)
+    const { title, text } = req.body 
 
-    // noteData.push(newNote) // req.body 
-    res.json({
-   message: `New person created `
-})
+    if (title && text){ 
+        const newNote = {  
+            title,
+            text,
+            noteID: id
+        }
+
+        noteData.push(newNote)
+        //const notesJSON = JSON.stringify(noteData)
+
+        //write to disk
+        fs.writeFile('./db/db.json', JSON.stringify(noteData), (err, data) => { //append to file?
+            err ? console.log(err) : console.log(`success`)
+        })
+
+        const response = {
+            status: 'sucess',
+            body: newNote
+        }
+
+        console.log(response)
+        res.json(noteData)
+    }
 })
 
-app.delete('/api/notes/:id', (req, res) => { // let noteData ?
+app.delete('/api/notes/:id', (req, res) => { // :title 
     // Find a note that matches 
-    const requestedNote = noteData.find(x => x.id == req.params.id)
+    //const requestedNote = noteData.find(x => x.id == req.params.id)
     // Filter all notes that dont equal requested id 
-    const removedNote = noteData.filter(x => x.id != req.params.id)
+    //const removedNote = noteData.filter(x => x.id != req.params.id)
 
     res.json({
         message: `Note ${req.query.title} (${req.params.id}) was deleted`

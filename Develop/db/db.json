@@ -1,7 +1,1 @@
-[
-    {
-        "title":"Test Title",
-        "text":"Test text",
-        "id": "uuid"
-    }
-]
+[{"title":"Test Title","text":"Test text","noteID":"e39e8269-098f-4722-bcf3-14eb4bba5fde"},{"title":"Example 1","text":"exaps;ufb","noteID":"e39e8269-098f-4722-bcf3-14eb4bba5fde"},{"title":"Go to Bank","text":"Ask about car loan","noteID":"68b33dcb-ab68-4e9a-8216-7a32b1e80d31"}]

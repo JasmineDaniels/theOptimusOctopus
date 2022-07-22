@@ -1,10 +1,8 @@
-//const { v4: uuidv4 } = require('uuid');
 let noteTitle;
 let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
-//let id = uuidv4()
 
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
