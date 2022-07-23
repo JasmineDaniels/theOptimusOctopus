@@ -1,12 +1,12 @@
 const express = require('express');
 const noteData = require('./db/db.json')
 const fs = require('fs')
-const id = require('./helpers/uuid')
+const id = require('./helpers/uuid');
+
 
 const PORT = process.env.PORT || 5001 
 const app = express();
 
-//middlewear
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -24,11 +24,13 @@ app.get('/api/notes', (req, res) => { // get all notes
 })
 
 app.get('/api/notes/:id', (req, res) => { // get a note
-    const requestedNote = noteData.find(x => x.id == req.params.id)
-    console.log(req.params)  
-    res.json(requestedNote)   
+    const requestedNote = noteData.find(note => note.noteID == req.params.id)
+    console.log(requestedNote)
+    if (requestedNote){
+        console.log(`success`)
+    }  
+    res.json(requestedNote) 
 })
-
 
 //method: 'post' = CREATE data
 app.post('/api/notes', (req, res) => { 
@@ -43,7 +45,6 @@ app.post('/api/notes', (req, res) => {
         }
 
         noteData.push(newNote)
-        //const notesJSON = JSON.stringify(noteData)
 
         //write to disk
         fs.writeFile('./db/db.json', JSON.stringify(noteData), (err, data) => { //append to file?
@@ -51,24 +52,27 @@ app.post('/api/notes', (req, res) => {
         })
 
         const response = {
-            status: 'sucess',
+            status: 'success',
             body: newNote
         }
 
         console.log(response)
-        res.json(noteData)
+        res.json(response)
     }
 })
 
-app.delete('/api/notes/:id', (req, res) => { // :title 
-    // Find a note that matches 
-    //const requestedNote = noteData.find(x => x.id == req.params.id)
-    // Filter all notes that dont equal requested id 
-    //const removedNote = noteData.filter(x => x.id != req.params.id)
+app.delete(`/api/notes/:noteID`, (req, res) => { 
+    const requestedNote = noteData.findIndex(note => note.noteID == req.params.noteID)
+    console.log(requestedNote)
 
-    res.json({
-        message: `Note ${req.query.title} (${req.params.id}) was deleted`
-        //message: `Note ${requestedNote.title} (${requestedNote.id}) was deleted`
+    if (requestedNote){
+        noteData.splice(requestedNote,1);
+        fs.writeFile('./db/db.json', JSON.stringify(noteData), (err, data) => {
+            err ? console.log(err) : console.log(`success`)
+        });
+        res.json(noteData);
+    } else res.json({
+        message: "Note not found"
     })
 })
 
